@@ -21,32 +21,35 @@ export default function Chatbot() {
 
   const sendMessage = async () => {
     if (!message.trim()) return;
-    
+
     // Add user message
     const userMsg = { text: message, sender: 'user' };
     setMessages(prev => [...prev, userMsg]);
     setMessage('');
-    
+
     const context = `You are an assistant for a software engineer's portfolio. Projects: ${JSON.stringify(t('projectsData', { returnObjects: true }))}. Skills: ${t('skillsData', { returnObjects: true }).join(', ')}. Experience: ${JSON.stringify(t('experienceData', { returnObjects: true }))}. Answer questions about the portfolio.`;
-    
+
     try {
-      const res = await fetch('http://localhost:11434/api/generate', {
+      const chatbotUrl = process.env.NEXT_PUBLIC_CHATBOT_URL || 'http://localhost:11434/api/generate';
+      const res = await fetch(`${chatbotUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama3.2',
+          model: 'llama3',
           prompt: `${context}\n\nUser: ${message}\nAssistant:`,
           stream: false,
         }),
       });
-      
+
+      if (!res.ok) throw new Error('Failed to fetch from chatbot API');
+
       const data = await res.json();
       const aiMsg = { text: data.response || "I couldn't process that request", sender: 'ai' };
       setMessages(prev => [...prev, aiMsg]);
     } catch (error) {
-      const errorMsg = { text: 'Error connecting to AI', sender: 'ai' };
+      const errorMsg = { text: `Error connecting to AI: ${error.message}`, sender: 'ai' };
       setMessages(prev => [...prev, errorMsg]);
-      console.error(error);
+      console.error('Chatbot error:', error);
     }
   };
 
@@ -64,7 +67,7 @@ export default function Chatbot() {
               <h3 className="font-bold">Portfolio Assistant</h3>
               <p className="text-sm opacity-80">Ask me anything about Idriss</p>
             </div>
-            
+
             <div className="flex-1 p-4 overflow-y-auto">
               <div className="space-y-4">
                 {messages.map((msg, index) => (
@@ -73,8 +76,8 @@ export default function Chatbot() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className={`max-w-[80%] p-3 rounded-2xl ${
-                      msg.sender === 'user' 
-                        ? 'bg-indigo-500 text-white ml-auto rounded-br-none' 
+                      msg.sender === 'user'
+                        ? 'bg-indigo-500 text-white ml-auto rounded-br-none'
                         : 'bg-gray-100 dark:bg-gray-800 rounded-bl-none'
                     }`}
                   >
@@ -84,7 +87,7 @@ export default function Chatbot() {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            
+
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
               <div className="flex gap-2">
                 <input
@@ -95,20 +98,38 @@ export default function Chatbot() {
                   className="flex-1 p-2 rounded-lg border dark:bg-gray-800"
                   placeholder="Type your message..."
                 />
-                <button 
+                <button
                   onClick={sendMessage}
                   className="p-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -121,8 +142,19 @@ export default function Chatbot() {
             onClick={() => setIsOpen(true)}
             className="w-14 h-14 bg-indigo-500 text-white rounded-full shadow-lg flex items-center justify-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+              />
             </svg>
           </motion.button>
         )}
