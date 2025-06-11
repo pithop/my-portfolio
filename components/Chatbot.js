@@ -30,12 +30,13 @@ export default function Chatbot() {
     const context = `You are an assistant for a software engineer's portfolio. Projects: ${JSON.stringify(t('projectsData', { returnObjects: true }))}. Skills: ${t('skillsData', { returnObjects: true }).join(', ')}. Experience: ${JSON.stringify(t('experienceData', { returnObjects: true }))}. Answer questions about the portfolio.`;
 
     try {
-      const chatbotUrl = process.env.NEXT_PUBLIC_CHATBOT_URL || 'http://localhost:11434/api/generate';
-      const res = await fetch(`${chatbotUrl}/api/generate`, {
+        const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
+    
+        const res = await fetch(`${baseUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama3',
+          model: 'portfolio-gemma',
           prompt: `${context}\n\nUser: ${message}\nAssistant:`,
           stream: false,
         }),

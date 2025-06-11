@@ -3,32 +3,32 @@ const nextConfig = {
     reactStrictMode: true,
     output: 'standalone', // Optimizes for Docker containers
     images: {
-      domains: ['https://my-portfolio-jbew.vercel.app/'], // Your Vercel domain
+        domains: ['https://my-portfolio-jbew.vercel.app/'], // Your Vercel domain
     },
     // Enable internationalized routing
     i18n: {
-      locales: ['en', 'fr'],
-      defaultLocale: 'en',
+        locales: ['en', 'fr'],
+        defaultLocale: 'en',
     },
     // Enable HTTPS security headers
     async headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: [
+        return [
             {
-              key: 'Strict-Transport-Security',
-              value: 'max-age=63072000; includeSubDomains; preload'
-            }
-          ],
-        },
-      ];
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://34.29.82.146"
+                    }
+                ],
+            },
+        ];
     },
-  };
-  
-  // For bundle analyzer (optional)
-  const withBundleAnalyzer = (process.env.ANALYZE === 'true') 
-    ? (await import('@next/bundle-analyzer')).default({ enabled: true }) 
+};
+
+// For bundle analyzer (optional)
+const withBundleAnalyzer = (process.env.ANALYZE === 'true')
+    ? (await import('@next/bundle-analyzer')).default({ enabled: true })
     : (config) => config;
-  
-  export default withBundleAnalyzer(nextConfig);
+
+export default withBundleAnalyzer(nextConfig);
