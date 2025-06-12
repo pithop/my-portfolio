@@ -35,7 +35,6 @@ export default function Chatbot() {
             // Create a URL object to manipulate the baseUrl
             let url = new URL(baseUrl);
 
-            // If the port is not 11434, set it to 11434
             if (url.port !== '11434') {
                 url.port = '11434';
             }
