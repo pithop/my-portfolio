@@ -4,36 +4,143 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function GitHubStats() {
-  const [stats, setStats] = useState({ publicRepos: 0, followers: 0 });
-  const username = 'pithop';
+  const githubUsername = 'pithop';
+  const gitlabUsername = 'chahraouiidriss'; // Adjust if different
+
+  const [githubStats, setGithubStats] = useState({ publicRepos: 0, followers: 0 });
+  const [githubRepos, setGithubRepos] = useState([]);
+  const [gitlabProjects, setGitlabProjects] = useState([]);
+
+  const fetchGithubData = async () => {
+    try {
+      const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`);
+      if (!userResponse.ok) throw new Error('GitHub user API error');
+      const userData = await userResponse.json();
+      setGithubStats({
+        publicRepos: userData.public_repos || 0,
+        followers: userData.followers || 0,
+      });
+
+      const reposResponse = await fetch(`https://api.github.com/users/${githubUsername}/repos`);
+      if (!reposResponse.ok) throw new Error('GitHub repos API error');
+      const reposData = await reposResponse.json();
+      setGithubRepos(reposData);
+    } catch (error) {
+      console.error('GitHub data fetch error:', error);
+    }
+  };
+
+  const fetchGitlabData = async () => {
+    try {
+      const userResponse = await fetch(`https://gitlab.com/api/v4/users?username=${gitlabUsername}`);
+      if (!userResponse.ok) throw new Error('GitLab user API error');
+      const userData = await userResponse.json();
+      if (userData.length > 0) {
+        const user = userData[0];
+        const projectsResponse = await fetch(`https://gitlab.com/api/v4/users/${user.id}/projects`);
+        if (!projectsResponse.ok) throw new Error('GitLab projects API error');
+        const projectsData = await projectsResponse.json();
+        setGitlabProjects(projectsData);
+      } else {
+        console.error('GitLab user not found');
+      }
+    } catch (error) {
+      console.error('GitLab data fetch error:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch(`https://api.github.com/users/${username}`);
-        if (!response.ok) throw new Error('GitHub API error');
-        const data = await response.json();
-        setStats({
-          publicRepos: data.public_repos || 0,
-          followers: data.followers || 0,
-        });
-      } catch (error) {
-        console.error('GitHub stats fetch error:', error);
-      }
-    };
-    fetchStats();
+    fetchGithubData();
+    fetchGitlabData();
   }, []);
+
+  // Sort repositories by stars
+  const sortedGithubRepos = [...githubRepos].sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
+  const sortedGitlabProjects = [...gitlabProjects].sort((a, b) => (b.star_count || 0) - (a.star_count || 0));
 
   return (
     <motion.div
-      className="bg-glass p-4 rounded-lg shadow-lg max-w-sm mx-auto"
+      className="bg-glass p-6 rounded-lg shadow-lg max-w-4xl mx-auto"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h3 className="text-xl font-semibold mb-2">GitHub Stats</h3>
-      <p>Public Repos: {stats.publicRepos}</p>
-      <p>Followers: {stats.followers}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* GitHub Section */}
+        <div>
+          <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitHub</h3>
+          <p className="text-gray-700 dark:text-gray-300">Public Repos: {githubStats.publicRepos}</p>
+          <p className="text-gray-700 dark:text-gray-300">Followers: {githubStats.followers}</p>
+          <h4 className="text-xl font-semibold mt-4 mb-2">Top Repositories</h4>
+          {githubRepos.length === 0 ? (
+            <p className="text-gray-600 dark:text-gray-400">No repositories found.</p>
+          ) : (
+            <ul className="list-disc pl-5 space-y-2">
+              {sortedGithubRepos.slice(0, 10).map(repo => (
+                <li key={repo.id}>
+                  <a
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {repo.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {githubRepos.length > 10 && (
+            <p className="mt-2">
+              <a
+                href={`https://github.com/${githubUsername}?tab=repositories`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                See all repositories
+              </a>
+            </p>
+          )}
+        </div>
+
+        {/* GitLab Section */}
+        <div>
+          <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitLab</h3>
+          <p className="text-gray-700 dark:text-gray-300">Projects: {gitlabProjects.length}</p>
+          <h4 className="text-xl font-semibold mt-4 mb-2">Top Projects</h4>
+          {gitlabProjects.length === 0 ? (
+            <p className="text-gray-600 dark:text-gray-400">No projects found.</p>
+          ) : (
+            <ul className="list-disc pl-5 space-y-2">
+              {sortedGitlabProjects.slice(0, 10).map(project => (
+                <li key={project.id}>
+                  <a
+                    href={project.web_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {project.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {gitlabProjects.length > 10 && (
+            <p className="mt-2">
+              <a
+                href={`https://gitlab.com/${gitlabUsername}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                See all projects
+              </a>
+            </p>
+          )}
+        </div>
+      </div>
     </motion.div>
   );
 }
