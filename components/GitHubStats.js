@@ -5,47 +5,96 @@ import { motion } from 'framer-motion';
 
 export default function GitHubStats() {
   const githubUsername = 'pithop';
-  const gitlabUsername = 'chahraouiidriss'; // Adjust if different
-
+  const gitlabUsername = 'chahraouiidriss';
   const [githubStats, setGithubStats] = useState({ publicRepos: 0, followers: 0 });
   const [githubRepos, setGithubRepos] = useState([]);
   const [gitlabProjects, setGitlabProjects] = useState([]);
+  const [githubError, setGithubError] = useState('');
+  const [gitlabError, setGitlabError] = useState('');
 
   const fetchGithubData = async () => {
     try {
-      const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`);
-      if (!userResponse.ok) throw new Error('GitHub user API error');
+      // Add proper headers for GitHub API
+      const headers = {
+        'User-Agent': 'Portfolio-App',
+        'Accept': 'application/vnd.github.v3+json'
+      };
+      
+      // Fetch user data
+      const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`, { headers });
+      if (!userResponse.ok) throw new Error(`GitHub user API error: ${userResponse.status}`);
       const userData = await userResponse.json();
+      
       setGithubStats({
         publicRepos: userData.public_repos || 0,
         followers: userData.followers || 0,
       });
 
-      const reposResponse = await fetch(`https://api.github.com/users/${githubUsername}/repos`);
-      if (!reposResponse.ok) throw new Error('GitHub repos API error');
-      const reposData = await reposResponse.json();
-      setGithubRepos(reposData);
+      // Fetch all repos with pagination
+      let allRepos = [];
+      let page = 1;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const reposResponse = await fetch(
+          `https://api.github.com/users/${githubUsername}/repos?per_page=100&page=${page}`, 
+          { headers }
+        );
+        
+        if (!reposResponse.ok) throw new Error(`GitHub repos API error: ${reposResponse.status}`);
+        
+        const reposData = await reposResponse.json();
+        allRepos = [...allRepos, ...reposData];
+        
+        // Check if more pages exist
+        hasMore = reposData.length === 100;
+        page++;
+      }
+      
+      setGithubRepos(allRepos);
+      setGithubError('');
     } catch (error) {
       console.error('GitHub data fetch error:', error);
+      setGithubError('Failed to load GitHub data. Please try again later.');
     }
   };
 
   const fetchGitlabData = async () => {
     try {
+      // Fetch GitLab user ID
       const userResponse = await fetch(`https://gitlab.com/api/v4/users?username=${gitlabUsername}`);
-      if (!userResponse.ok) throw new Error('GitLab user API error');
+      if (!userResponse.ok) throw new Error(`GitLab user API error: ${userResponse.status}`);
+      
       const userData = await userResponse.json();
-      if (userData.length > 0) {
-        const user = userData[0];
-        const projectsResponse = await fetch(`https://gitlab.com/api/v4/users/${user.id}/projects`);
-        if (!projectsResponse.ok) throw new Error('GitLab projects API error');
+      if (!userData.length) throw new Error('GitLab user not found');
+      
+      const userId = userData[0].id;
+      
+      // Fetch all projects with pagination
+      let allProjects = [];
+      let page = 1;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const projectsResponse = await fetch(
+          `https://gitlab.com/api/v4/users/${userId}/projects?per_page=100&page=${page}`
+        );
+        
+        if (!projectsResponse.ok) throw new Error(`GitLab projects API error: ${projectsResponse.status}`);
+        
         const projectsData = await projectsResponse.json();
-        setGitlabProjects(projectsData);
-      } else {
-        console.error('GitLab user not found');
+        allProjects = [...allProjects, ...projectsData];
+        
+        // Check if more pages exist
+        hasMore = projectsData.length === 100;
+        page++;
       }
+      
+      setGitlabProjects(allProjects);
+      setGitlabError('');
     } catch (error) {
       console.error('GitLab data fetch error:', error);
+      setGitlabError('Failed to load GitLab projects. Please try again later.');
     }
   };
 
@@ -54,7 +103,7 @@ export default function GitHubStats() {
     fetchGitlabData();
   }, []);
 
-  // Sort repositories by stars
+  // Sort repositories
   const sortedGithubRepos = [...githubRepos].sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
   const sortedGitlabProjects = [...gitlabProjects].sort((a, b) => (b.star_count || 0) - (a.star_count || 0));
 
@@ -69,11 +118,29 @@ export default function GitHubStats() {
         {/* GitHub Section */}
         <div>
           <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitHub</h3>
+          {githubError && (
+            <div className="text-red-500 mb-4">
+              {githubError}
+              <p className="mt-2">
+                <a 
+                  href={`https://github.com/${githubUsername}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  View GitHub profile directly
+                </a>
+              </p>
+            </div>
+          )}
           <p className="text-gray-700 dark:text-gray-300">Public Repos: {githubStats.publicRepos}</p>
           <p className="text-gray-700 dark:text-gray-300">Followers: {githubStats.followers}</p>
           <h4 className="text-xl font-semibold mt-4 mb-2">Top Repositories</h4>
+          
           {githubRepos.length === 0 ? (
-            <p className="text-gray-600 dark:text-gray-400">No repositories found.</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {githubError ? 'Failed to load repositories' : 'Loading GitHub repositories...'}
+            </p>
           ) : (
             <ul className="list-disc pl-5 space-y-2">
               {sortedGithubRepos.slice(0, 10).map(repo => (
@@ -90,6 +157,7 @@ export default function GitHubStats() {
               ))}
             </ul>
           )}
+          
           {githubRepos.length > 10 && (
             <p className="mt-2">
               <a
@@ -107,10 +175,28 @@ export default function GitHubStats() {
         {/* GitLab Section */}
         <div>
           <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitLab</h3>
+          {gitlabError && (
+            <div className="text-red-500 mb-4">
+              {gitlabError}
+              <p className="mt-2">
+                <a 
+                  href={`https://gitlab.com/${gitlabUsername}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  View GitLab profile directly
+                </a>
+              </p>
+            </div>
+          )}
           <p className="text-gray-700 dark:text-gray-300">Projects: {gitlabProjects.length}</p>
           <h4 className="text-xl font-semibold mt-4 mb-2">Top Projects</h4>
+          
           {gitlabProjects.length === 0 ? (
-            <p className="text-gray-600 dark:text-gray-400">No projects found.</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {gitlabError ? 'Failed to load projects' : 'Loading GitLab projects...'}
+            </p>
           ) : (
             <ul className="list-disc pl-5 space-y-2">
               {sortedGitlabProjects.slice(0, 10).map(project => (
@@ -127,6 +213,7 @@ export default function GitHubStats() {
               ))}
             </ul>
           )}
+          
           {gitlabProjects.length > 10 && (
             <p className="mt-2">
               <a

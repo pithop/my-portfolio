@@ -57,3 +57,14 @@
     @apply bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200 px-4 py-2 rounded-full;
   }
 }
+.prose {
+  max-width: 100%;
+}
+.prose img {
+  border-radius: 0.5rem;
+}
+.prose code {
+  padding: 0.2em 0.4em;
+  background: rgba(135, 131, 120, 0.15);
+  border-radius: 0.3em;
+}

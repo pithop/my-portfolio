@@ -9,7 +9,7 @@ import { generateResumePDF } from '../utils/generateResume';
 import { motion } from 'framer-motion';
 import Particles from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
-
+import ContactForm from '../components/ContactForm';
 export default function Home() {
   const { t } = useTranslation();
 
@@ -30,12 +30,12 @@ export default function Home() {
               fpsLimit: 120,
               particles: {
                 color: { value: "#ffffff" },
-                links: { 
-                  color: "#ffffff", 
-                  distance: 150, 
-                  enable: true, 
-                  opacity: 0.3, 
-                  width: 1 
+                links: {
+                  color: "#ffffff",
+                  distance: 150,
+                  enable: true,
+                  opacity: 0.3,
+                  width: 1
                 },
                 move: {
                   enable: true,
@@ -43,9 +43,9 @@ export default function Home() {
                   direction: "none",
                   outModes: "bounce"
                 },
-                number: { 
-                  density: { enable: true, area: 800 }, 
-                  value: 100 
+                number: {
+                  density: { enable: true, area: 800 },
+                  value: 100
                 },
                 opacity: { value: 0.5 },
                 size: { value: { min: 1, max: 3 } },
@@ -55,7 +55,7 @@ export default function Home() {
             className="absolute inset-0"
           />
         </div>
-        
+
         <div className="container-padding text-center z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -71,7 +71,7 @@ export default function Home() {
             >
               {t('welcome')}
             </motion.h1>
-            
+
             <motion.p
               className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto text-gray-700 dark:text-gray-300"
               initial={{ opacity: 0 }}
@@ -80,7 +80,7 @@ export default function Home() {
             >
               {t('tagline')}
             </motion.p>
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ export default function Home() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-12">
               {t('aboutContent')}
             </p>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
               <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl text-center">
                 <div className="text-3xl font-bold text-indigo-500">3+</div>
@@ -162,7 +162,7 @@ export default function Home() {
           >
             {t('projectsTitle')}
           </motion.h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {t('projectsData', { returnObjects: true }).map((project, index) => (
               <ProjectCard key={index} project={project} index={index} />
@@ -183,7 +183,7 @@ export default function Home() {
           >
             {t('skillsTitle')}
           </motion.h2>
-          
+
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             {t('skillsData', { returnObjects: true }).map((skill, index) => (
               <motion.span
@@ -198,7 +198,7 @@ export default function Home() {
               </motion.span>
             ))}
           </div>
-          
+
           <div className="mt-16 max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold mb-6 text-center">Technical Expertise</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -259,7 +259,7 @@ export default function Home() {
           >
             {t('contactTitle')}
           </motion.h2>
-          
+
           <motion.p
             className="text-xl mb-12 max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
@@ -267,30 +267,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Interested in working together or have questions? Feel free to reach out!
+            Have a project or want to collaborate? Get in touch!
           </motion.p>
-          
-          <motion.div
-            className="flex flex-col sm:flex-row justify-center gap-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            <a 
-              href="mailto:chahraouiidriss@gmail.com" 
-              className="px-8 py-4 bg-white text-indigo-600 font-medium rounded-full hover:bg-gray-100 transition-all"
-            >
-              Email Me
-            </a>
-            <a 
-              href="https://linkedin.com/in/Charaoui_Idriss" 
-              target="_blank"
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-medium rounded-full hover:bg-white/10 transition-all"
-            >
-              LinkedIn Profile
-            </a>
-          </motion.div>
+
+          <ContactForm />
         </div>
       </section>
 
