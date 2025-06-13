@@ -1,0 +1,40 @@
+import { NextResponse } from 'next/server';
+import { i18nMiddleware } from './i18n-middleware';
+
+export function middleware(request) {
+  // Exclude internal Next.js paths and the root path
+  if (request.nextUrl.pathname.startsWith('/_next') || request.nextUrl.pathname.startsWith('/api') || request.nextUrl.pathname === '/favicon.ico' || request.nextUrl.pathname === '/') {
+    return NextResponse.next();
+  }
+
+  const response = i18nMiddleware(request);
+
+  // Set CSP headers based on environment
+  if (process.env.NODE_ENV === 'development') {
+    response.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "img-src 'self' data: blob:; " +
+      "font-src 'self' data:; " +
+      "connect-src 'self' ws: https://api.github.com https://gitlab.com http://34.29.82.146:11434;"
+    );
+  } else {
+    response.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self'; " +
+      "script-src 'self' https://va.vercel-scripts.com; " +
+      "style-src 'self'; " +
+      "img-src 'self'; " +
+      "font-src 'self'; " +
+      "connect-src 'self' https://api.github.com https://gitlab.com https://formspree.io;"
+    );
+  }
+
+  return response;
+}
+
+export const config = {
+  matcher: '/:path*',
+};
