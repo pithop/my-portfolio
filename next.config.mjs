@@ -21,7 +21,8 @@ const nextConfig = {
                   "'sha256-9QtASrjSVh4jz733gqmzB7U50NN2j7uvQbOEbHbPEE8=' " +
                   "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU=' " +
                   "'sha256-6qv3akp7aecxLcWBTKIxHhd1cc0h+TTTuN0bcyNm/SI=' " +
-                  "'sha256-LWh5mpBXtX7DIebg74gt+xZNBWlMULGhyinwFd+gmQc='; " + // Add this line
+                  "'sha256-LWh5mpBXtX7DIebg74gt+xZNBWlMULGhyinwFd+gmQc=' " +
+                  "'sha256-WlQClIzOyMLDx8A+W8TgOPh6Un664jFvCkdTa6rbw8o='; " + // Added the missing hash
                   "style-src 'self' 'unsafe-inline'; " +
                   "img-src 'self'; " +
                   "font-src 'self'; " +
