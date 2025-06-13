@@ -1,6 +1,7 @@
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import Link from 'next/link';
 
 export default async function PostPage({ params }) {
   const owner = 'pithop'; // Replace with your GitHub username

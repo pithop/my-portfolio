@@ -19,7 +19,7 @@ export default function Chatbot() {
     
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+      }, [messages.length]);
 
     // Preload model and set up initial welcome message
     useEffect(() => {

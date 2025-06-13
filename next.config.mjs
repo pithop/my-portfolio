@@ -5,12 +5,7 @@ const nextConfig = {
     images: {
         domains: ['https://my-portfolio-jbew.vercel.app/'], // Your Vercel domain
     },
-    // Enable internationalized routing
-    i18n: {
-        locales: ['en', 'fr'],
-        defaultLocale: 'en',
-    },
-    // Enable HTTPS security headers
+    
     async headers() {
         return [
             {
