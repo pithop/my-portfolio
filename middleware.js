@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
-
+import { i18nMiddleware } from './i18n-middleware';
 export function middleware(request) {
+    const i18nResponse = i18nMiddleware(request);
+  if (i18nResponse) {
+    return i18nResponse;
+  }
     const response = NextResponse.next();
     
     if (process.env.NODE_ENV === 'development') {
