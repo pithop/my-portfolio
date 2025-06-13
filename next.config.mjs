@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-      domains: ['my-portfolio-jbew.vercel.app'], // Your Vercel domain
+      domains: ['my-portfolio-jbew.vercel.app'],
     },
   
     async headers() {
@@ -25,14 +25,7 @@ const nextConfig = {
                   "'sha256-N892DVQDcTd0ZDKXLpKs7sxE0PTasRZWexGa5QYmwSo=' " +
                   "'sha256-9QtASrjSVh4jz733gqmzB7U50NN2j7uvQbOEbHbPEE8=' " +
                   "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU='; " +
-                  "style-src 'self' " +
-                  "'sha256-68ahHyH65aqS202beKyu22MkdAEr0fBCN3eHnbYX+wg=' " +
-                  "'sha256-lTNLITg4VmqEvlI4wGeQ4a6fnq2pqm2gXsTn8kRHqb0=' " +
-                  "'sha256-tTgjrFAQDNcRW/9ebtwfDewCTgZMFnKpGa9tcHFyvcs=' " +
-                  "'sha256-5ONOhhZUA+8yXmWfgTx55lOHjkqoSYqg4zmB0rXUkqQ=' " +
-                  "'sha256-vENXQOnSGyrll9VJcRBSYktGlLVMz6yT8H73HWqZUdE=' " +
-                  "'sha256-ZDrxqUOB4m/L0JWL/+gS52g1CRH0l/qwMhjTw5Z/Fsc=' " +
-                  "'sha256-BeII9jTh6JwgS6+KsPTt8OSlNqSokbiDzWkQo6bj3AM='; " +
+                  "style-src 'self' 'unsafe-inline'; " +  // Add 'unsafe-inline' here
                   "img-src 'self'; " +
                   "font-src 'self'; " +
                   "connect-src 'self' https://api.github.com https://gitlab.com https://formspree.io;"
@@ -43,9 +36,4 @@ const nextConfig = {
     },
   };
   
-  // For bundle analyzer (optional)
-  const withBundleAnalyzer = (process.env.ANALYZE === 'true')
-    ? (await import('@next/bundle-analyzer')).default({ enabled: true })
-    : (config) => config;
-  
-  export default withBundleAnalyzer(nextConfig);
+  export default nextConfig;
