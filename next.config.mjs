@@ -24,8 +24,9 @@ const nextConfig = {
                   "'sha256-U9bzHGzJ8ofMp/hL2mcg3CP8hWF5NkBkxKRePTbwAuA=' " +
                   "'sha256-N892DVQDcTd0ZDKXLpKs7sxE0PTasRZWexGa5QYmwSo=' " +
                   "'sha256-9QtASrjSVh4jz733gqmzB7U50NN2j7uvQbOEbHbPEE8=' " +
-                  "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU='; " +
-                  "style-src 'self' 'unsafe-inline'; " +  // Add 'unsafe-inline' here
+                  "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU=' " +
+                  "'sha256-6qv3akp7aecxLcWBTKIxHhd1cc0h+TTTuN0bcyNm/SI='; " + // Added the missing hash
+                  "style-src 'self' 'unsafe-inline'; " +
                   "img-src 'self'; " +
                   "font-src 'self'; " +
                   "connect-src 'self' https://api.github.com https://gitlab.com https://formspree.io;"
