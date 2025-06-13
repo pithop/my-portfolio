@@ -9,16 +9,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-      <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <title>Idriss Chahraoui - Software Engineer</title>
         <meta name="description" content="Portfolio of Idriss Chahraoui - Master's student in Software Engineering" />
         <meta property="og:image" content="/og.jpg" />
+        
+        {/* Preconnect to Vercel Analytics */}
+        <link rel="preconnect" href="https://va.vercel-scripts.com" />
       </head>
       <body suppressHydrationWarning>
         <Providers>
           <Header />
           {children}
           <Footer />
+          {/* Move Analytics outside Providers if needed */}
           <Analytics />
           <SpeedInsights />
         </Providers>

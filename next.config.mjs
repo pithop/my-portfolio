@@ -11,6 +11,7 @@ const nextConfig = {
                 ? "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;"
                 : "default-src 'self'; " +
                   "script-src 'self' https://va.vercel-scripts.com " +
+                  "'sha256-pbG3g4i5TYFiHwYV6L0nc5U41lJx8+QpHjHWzqiWwro=' " + // Added missing hash
                   "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
                   "'sha256-ouVZk5wMSzq8VLW3LwColE3RefBzyA8GXDMId9oaKts=' " +
                   "'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' " +
@@ -22,11 +23,12 @@ const nextConfig = {
                   "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU=' " +
                   "'sha256-6qv3akp7aecxLcWBTKIxHhd1cc0h+TTTuN0bcyNm/SI=' " +
                   "'sha256-LWh5mpBXtX7DIebg74gt+xZNBWlMULGhyinwFd+gmQc=' " +
-                  "'sha256-WlQClIzOyMLDx8A+W8TgOPh6Un664jFvCkdTa6rbw8o='; " + // Added the missing hash
+                  "'sha256-WlQClIzOyMLDx8A+W8TgOPh6Un664jFvCkdTa6rbw8o='; " +
                   "style-src 'self' 'unsafe-inline'; " +
-                  "img-src 'self'; " +
-                  "font-src 'self'; " +
-                  "connect-src 'self' https://api.github.com https://gitlab.com https://formspree.io;"
+                  "img-src 'self' data: blob:; " + // Added data: and blob: for images
+                  "font-src 'self' data:; " + // Added data: for fonts
+                  "connect-src 'self' https://api.github.com https://gitlab.com https://formspree.io https://va.vercel-scripts.com; " + // Added Vercel analytics domain
+                  "frame-src 'self';"
             },
           ],
         },
