@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    images: {
-      domains: ['my-portfolio-jbew.vercel.app'],
-    },
-  
     async headers() {
       return [
         {
@@ -13,7 +8,7 @@ const nextConfig = {
             {
               key: 'Content-Security-Policy',
               value: process.env.NODE_ENV === 'development'
-                ? "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws: https://api.github.com https://gitlab.com http://34.29.82.146:11434 https://formspree.io;"
+                ? "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;"
                 : "default-src 'self'; " +
                   "script-src 'self' https://va.vercel-scripts.com " +
                   "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
@@ -25,7 +20,8 @@ const nextConfig = {
                   "'sha256-N892DVQDcTd0ZDKXLpKs7sxE0PTasRZWexGa5QYmwSo=' " +
                   "'sha256-9QtASrjSVh4jz733gqmzB7U50NN2j7uvQbOEbHbPEE8=' " +
                   "'sha256-UKWRd3hxWZNWsFSMG0Of6oz4c4g8f78BuglqWjGMaqU=' " +
-                  "'sha256-6qv3akp7aecxLcWBTKIxHhd1cc0h+TTTuN0bcyNm/SI='; " + // Added the missing hash
+                  "'sha256-6qv3akp7aecxLcWBTKIxHhd1cc0h+TTTuN0bcyNm/SI=' " +
+                  "'sha256-LWh5mpBXtX7DIebg74gt+xZNBWlMULGhyinwFd+gmQc='; " + // Add this line
                   "style-src 'self' 'unsafe-inline'; " +
                   "img-src 'self'; " +
                   "font-src 'self'; " +
