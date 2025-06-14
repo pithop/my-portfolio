@@ -76,7 +76,7 @@ export default function Chatbot() {
         };
       
         preloadModel();
-      }, [isOpen]);
+      }, [isOpen, messages.length]);
 
     // Optimized context generation
     const getOptimizedContext = () => {
