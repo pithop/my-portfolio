@@ -4,6 +4,17 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const getApiUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return '/api/chatbot'; // Use proxy in production
+  } else {
+    const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
+    const url = new URL(baseUrl);
+    if (url.port !== '11434') url.port = '11434';
+    return new URL('api/generate', url).href;
+  }
+};
+
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState('');
@@ -19,7 +30,7 @@ export default function Chatbot() {
     
     useEffect(() => {
         scrollToBottom();
-      }, [messages.length]);
+    }, [messages.length]);
 
     // Preload model and set up initial welcome message
     useEffect(() => {
@@ -28,16 +39,24 @@ export default function Chatbot() {
         
         const preloadModel = async () => {
           try {
+            // Skip preload in production (handled by proxy)
+            if (process.env.NODE_ENV === 'production') {
+              setModelLoaded(true);
+              if (messages.length === 0) {
+                setMessages([{ 
+                  text: "Hello! I'm Idriss's portfolio assistant. Ask me anything about his skills, projects, or experience!", 
+                  sender: 'ai' 
+                }]);
+              }
+              return;
+            }
+
             // Check if environment variable is set
             if (!process.env.NEXT_PUBLIC_CHATBOT_URL) {
               throw new Error('Chatbot URL not configured');
             }
             
-            const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
-            const url = new URL(baseUrl);
-            if (url.port !== '11434') url.port = '11434';
-            
-            const apiUrl = new URL('api/generate', url).href;
+            const apiUrl = getApiUrl();
             
             // Preload request
             const response = await fetch(apiUrl, {
@@ -67,6 +86,7 @@ export default function Chatbot() {
             }
           } catch (error) {
             console.error('Model preload failed:', error);
+            setModelLoaded(true); // Still allow sending messages
             setMessages([
               { 
                 text: "Hello! I'm Idriss's portfolio assistant. How can I help you today?", 
@@ -104,11 +124,7 @@ export default function Chatbot() {
         setIsTyping(true);
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
-            let url = new URL(baseUrl);
-            if (url.port !== '11434') url.port = '11434';
-            
-            const apiUrl = new URL('api/generate', url).href;
+            const apiUrl = getApiUrl();
             const context = getOptimizedContext();
             
             // Use streaming API for faster responses
@@ -142,7 +158,7 @@ export default function Chatbot() {
                 const { value, done } = await reader.read();
                 if (done) break;
                 
-                const chunk = decoder.decode(value);
+                const chunk = decoder.decode(value, { stream: true });
                 const lines = chunk.split('\n').filter(line => line.trim());
                 
                 for (const line of lines) {

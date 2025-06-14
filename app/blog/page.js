@@ -33,7 +33,7 @@ export default function BlogPage() {
         for (const file of files) {
           if (file.type === 'dir') continue;
           
-          const contentResponse = await fetch(file.download_url);
+          const contentResponse = await fetch(`${file.download_url}?raw=true`);
           if (!contentResponse.ok) continue;
           
           const content = await contentResponse.text();

@@ -28,7 +28,7 @@ ${content}
     const owner = 'pithop';
     const repo = 'my-portfolio-blog';
     const path = `posts/${slug}.md`;
-    const token = process.env.GITHUB_TOKEN;
+    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
     // Check if GITHUB_TOKEN is set
     if (!token) {
