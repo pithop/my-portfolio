@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import matter from 'gray-matter'; // Make sure you have this installed
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -18,6 +19,7 @@ export default function BlogPage() {
         const path = 'posts';
         const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
+        // Fetch list of files from GitHub API
         const response = await fetch(
           `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
           {
@@ -33,8 +35,14 @@ export default function BlogPage() {
         for (const file of files) {
           if (file.type === 'dir') continue;
           
-          const contentResponse = await fetch(`${file.download_url}?raw=true`);
-          if (!contentResponse.ok) continue;
+          // Use our proxy to fetch the content
+          const proxyUrl = `/api/github-content?path=${owner}/${repo}/main/${file.path}`;
+          const contentResponse = await fetch(proxyUrl);
+          
+          if (!contentResponse.ok) {
+            console.error(`Failed to fetch content for ${file.name}`);
+            continue;
+          }
           
           const content = await contentResponse.text();
           const { data } = matter(content);
@@ -49,6 +57,7 @@ export default function BlogPage() {
         setPosts(postsData);
       } catch (err) {
         setError(err.message);
+        console.error('Error fetching posts:', err);
       } finally {
         setLoading(false);
       }
@@ -77,8 +86,8 @@ export default function BlogPage() {
             </div>
           ))}
         </div>
-      ) : (
-        <p>No blog posts yet. Check back soon!</p>
+      ) : !loading && (
+        <p className="text-center py-10">No blog posts found. Check back soon!</p>
       )}
     </div>
   );

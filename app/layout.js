@@ -22,7 +22,14 @@ export default function RootLayout({ children }) {
           <Header />
           {children}
           <Footer />
-          <Analytics />
+          <Analytics
+            beforeSend={(event) => {
+              if (event.url.includes('script.debug.js')) {
+                return null;
+              }
+              return event;
+            }}
+          />
           <SpeedInsights />
         </Providers>
       </body>

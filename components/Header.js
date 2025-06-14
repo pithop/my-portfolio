@@ -32,7 +32,7 @@ export default function Header() {
         
         {/* Desktop Navigation */}
         <ul className="hidden md:flex space-x-6">
-          {['about-content', 'experience', 'projects', 'skills', 'github', 'blog', 'contact'].map((section) => (
+          {['aboutcontent', 'experience', 'projects', 'skills', 'github', 'blog', 'contact'].map((section) => (
             <li key={section}>
               <a 
                 href={section === 'blog' ? '/blog' : `#${section}`}
@@ -62,7 +62,7 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden mt-4 bg-glass rounded-lg shadow-lg p-4">
           <ul className="space-y-4">
-            {['about-content', 'experience', 'projects', 'skills', 'github', 'blog', 'contact'].map((section) => (
+            {['aboutcontent', 'experience', 'projects', 'skills', 'github', 'blog', 'contact'].map((section) => (
               <li key={section}>
                 <a 
                   href={section === 'blog' ? '/blog' : `#${section}`}
