@@ -26,6 +26,7 @@ export default function Home() {
             id="tsparticles"
             init={particlesInit}
             options={{
+              fullScreen: false,
               background: { color: { value: "transparent" } },
               fpsLimit: 120,
               particles: {
@@ -52,7 +53,7 @@ export default function Home() {
               },
               detectRetina: true,
             }}
-            className="absolute inset-0"
+            className="absolute inset-0 pointer-events-none"
           />
         </div>
 

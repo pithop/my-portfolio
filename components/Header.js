@@ -19,7 +19,7 @@ export default function Header() {
   const changeLanguage = (lng) => i18n.changeLanguage(lng);
 
   return (
-    <header className="fixed top-0 w-full p-4 bg-glass shadow-md z-10">
+    <header className="fixed top-0 z-30 w-full p-4 bg-glass shadow-md z-10">
       <nav className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Mobile menu button */}
         <button 
