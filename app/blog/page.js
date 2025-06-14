@@ -1,71 +1,85 @@
-import matter from 'gray-matter';
+// app/blog/page.js
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-export default async function BlogPage() {
-  const owner = 'pithop'; // Replace with your GitHub username
-  const repo = 'my-portfolio-blog'; // Replace with your repository name
-  const path = 'posts';
-  const token = process.env.GITHUB_TOKEN;
+export default function BlogPage() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  try {
-    if (!token) {
-      throw new Error('GITHUB_TOKEN is not set');
-    }
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-      headers: {
-        Authorization: `token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const files = await response.json();
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const owner = 'pithop';
+        const repo = 'my-portfolio-blog';
+        const path = 'posts';
+        const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
-    const posts = await Promise.all(
-      files.map(async (file) => {
-        if (file.type === 'dir') return null;
-        const contentResponse = await fetch(file.download_url);
-        if (!contentResponse.ok) {
-          console.error(`Failed to fetch content for ${file.name}`);
-          return null;
+        const response = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+          {
+            headers: token ? { Authorization: `token ${token}` } : {}
+          }
+        );
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const files = await response.json();
+        const postsData = [];
+
+        for (const file of files) {
+          if (file.type === 'dir') continue;
+          
+          const contentResponse = await fetch(file.download_url);
+          if (!contentResponse.ok) continue;
+          
+          const content = await contentResponse.text();
+          const { data } = matter(content);
+          postsData.push({
+            slug: file.name.replace('.md', ''),
+            title: data.title,
+            date: data.date,
+            excerpt: data.excerpt,
+          });
         }
-        const content = await contentResponse.text();
-        const { data } = matter(content);
-        return {
-          slug: file.name.replace('.md', ''),
-          title: data.title,
-          date: data.date,
-          excerpt: data.excerpt,
-        };
-      })
-    );
 
-    const filteredPosts = posts.filter((post) => post !== null);
+        setPosts(postsData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-      <div className="container-padding py-20">
-        <h1 className="text-4xl font-bold mb-12">My Blog</h1>
+    fetchPosts();
+  }, []);
 
-        {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <div key={post.slug} className="bg-glass rounded-2xl p-6 shadow-lg">
-                <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">{post.date}</p>
-                <p className="mb-6">{post.excerpt}</p>
-                <Link href={`/blog/${post.slug}`} className="text-indigo-500 hover:underline">
-                  Read More →
-                </Link>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>No blog posts yet. Check back soon!</p>
-        )}
-      </div>
-    );
-  } catch (error) {
-    console.error('Error fetching blog posts:', error);
-    return <div>Failed to load blog posts. Please try again later.</div>;
-  }
+  if (loading) return <div className="container-padding py-20 text-center">Loading blog posts...</div>;
+  if (error) return <div className="container-padding py-20 text-center">Error: {error}</div>;
+
+  return (
+    <div className="container-padding py-20">
+      <h1 className="text-4xl font-bold mb-12">My Blog</h1>
+
+      {posts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <div key={post.slug} className="bg-glass rounded-2xl p-6 shadow-lg">
+              <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{post.date}</p>
+              <p className="mb-6">{post.excerpt}</p>
+              <Link href={`/blog/${post.slug}`} className="text-indigo-500 hover:underline">
+                Read More →
+              </Link>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No blog posts yet. Check back soon!</p>
+      )}
+    </div>
+  );
 }

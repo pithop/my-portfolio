@@ -24,6 +24,7 @@ export default function Chatbot() {
     // Preload model and set up initial welcome message
     useEffect(() => {
         if (!isOpen) return;
+        let isMounted = true;
         
         const preloadModel = async () => {
           try {
@@ -76,6 +77,7 @@ export default function Chatbot() {
         };
       
         preloadModel();
+        return () => { isMounted = false };
       }, [isOpen, messages.length]);
 
     // Optimized context generation
