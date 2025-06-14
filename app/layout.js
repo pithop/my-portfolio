@@ -1,4 +1,3 @@
-// app/layout.js
 import Providers from '../components/Providers';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -15,6 +14,8 @@ export default function RootLayout({ children }) {
         <meta name="description" content="Portfolio of Idriss Chahraoui - Master's student in Software Engineering" />
         <meta property="og:image" content="/og.jpg" />
         <link rel="preconnect" href="https://va.vercel-scripts.com" />
+        {/* Preload Vercel Analytics script */}
+        <link rel="preload" href="https://va.vercel-scripts.com/v1/script.debug.js" as="script" />
       </head>
       <body suppressHydrationWarning>
         <Providers>
