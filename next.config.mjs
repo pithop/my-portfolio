@@ -11,6 +11,10 @@ const nextConfig = {
               ? "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;"
               : "default-src 'self'; " +
                 "script-src 'self' https://va.vercel-scripts.com " +
+                // Add all missing hashes from your error messages
+                "'sha256-/Y8MUjsEn0oMUtOoeW1e07krpO1+m7AqwD+pI7Eaid0=' " +
+                "'sha256-r4I0ZYYm+/fGK/1wNurvVxJWdWa7nIh5Oh/XgBwUkBM=' " +
+                "'sha256-XOc+Kv2vJYlj7VgdYGoBUfYDXobZnAZZN/eS2EL8Rzo=' " +
                 "'sha256-Sb/MAzhP4yaBlSgQFTRCV+uCERNZstQb2P/foiU7bzc=' " +
                 "'sha256-pbG3g4i5TYFiHwYV6L0nc5U41lJx8+QpHjHWzqiWwro=' " +
                 "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
