@@ -248,7 +248,7 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section-padding bg-gradient-to-br from-indigo-500 to-indigo-700 text-white">
+      <section id="contact" className="section-padding bg-gradient-to-br from-indigo-500 to-indigo-700 text-white relative z-10">
         <div className="container-padding text-center">
           <motion.h2
             className="text-3xl md:text-4xl font-bold mb-6"
