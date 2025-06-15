@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import franc from 'franc-min';
+import * as franc from 'franc-min';
 
 const getApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
@@ -138,12 +138,12 @@ export default function Chatbot() {
             const apiUrl = getApiUrl();
             
             // Detect language of the user's message
-            const detectedLang = franc(userMsg.text);
+            const detectedLang = franc.default(userMsg.text);
             const languageMap = {
               'eng': 'en',
               'fra': 'fr',
             };
-            const detectedLangCode = 'en';
+            const detectedLangCode = languageMap[detectedLang] || 'en';
             
             // Generate context in the detected language
             const context = getOptimizedContext(detectedLangCode);
