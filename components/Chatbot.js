@@ -3,17 +3,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as franc from 'franc-min';
+import { franc } from 'franc-min';
 
 const getApiUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return '/api/chatbot'; // Use proxy in production
-  } else {
-    const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
-    const url = new URL(baseUrl);
-    if (url.port !== '11434') url.port = '11434';
-    return new URL('api/generate', url).href;
-  }
+    if (process.env.NODE_ENV === 'production') {
+        return '/api/chatbot'; // Use proxy in production
+    } else {
+        const baseUrl = process.env.NEXT_PUBLIC_CHATBOT_URL;
+        const url = new URL(baseUrl);
+        if (url.port !== '11434') url.port = '11434';
+        return new URL('api/generate', url).href;
+    }
 };
 
 export default function Chatbot() {
@@ -28,7 +28,7 @@ export default function Chatbot() {
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-    
+
     useEffect(() => {
         scrollToBottom();
     }, [messages.length]);
@@ -36,65 +36,65 @@ export default function Chatbot() {
     useEffect(() => {
         if (!isOpen) return;
         let isMounted = true;
-        
-        const preloadModel = async () => {
-          try {
-            if (process.env.NODE_ENV === 'production') {
-              setModelLoaded(true);
-              if (messages.length === 0) {
-                setMessages([{ 
-                  text: "Hello! I'm Idriss's portfolio assistant. Ask me anything about his skills, projects, or experience!", 
-                  sender: 'ai' 
-                }]);
-              }
-              return;
-            }
 
-            if (!process.env.NEXT_PUBLIC_CHATBOT_URL) {
-              throw new Error('Chatbot URL not configured');
-            }
-            
-            const apiUrl = getApiUrl();
-            
-            const response = await fetch(apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model: 'portfolio-gemma',
-                prompt: 'Preload model',
-                stream: false,
-              }),
-            });
-            
-            if (!response.ok) {
-              throw new Error(`Preload failed: ${response.status}`);
-            }
-            
-            setModelLoaded(true);
-            
-            if (messages.length === 0) {
-              setMessages([
-                { 
-                  text: "Hello! I'm Idriss's portfolio assistant. Ask me anything about his skills, projects, or experience!", 
-                  sender: 'ai' 
+        const preloadModel = async () => {
+            try {
+                if (process.env.NODE_ENV === 'production') {
+                    setModelLoaded(true);
+                    if (messages.length === 0) {
+                        setMessages([{
+                            text: "Hello! I'm Idriss's portfolio assistant. Ask me anything about his skills, projects, or experience!",
+                            sender: 'ai'
+                        }]);
+                    }
+                    return;
                 }
-              ]);
+
+                if (!process.env.NEXT_PUBLIC_CHATBOT_URL) {
+                    throw new Error('Chatbot URL not configured');
+                }
+
+                const apiUrl = getApiUrl();
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'portfolio-gemma',
+                        prompt: 'Preload model',
+                        stream: false,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Preload failed: ${response.status}`);
+                }
+
+                setModelLoaded(true);
+
+                if (messages.length === 0) {
+                    setMessages([
+                        {
+                            text: "Hello! I'm Idriss's portfolio assistant. Ask me anything about his skills, projects, or experience!",
+                            sender: 'ai'
+                        }
+                    ]);
+                }
+            } catch (error) {
+                console.error('Model preload failed:', error);
+                setModelLoaded(true);
+                setMessages([
+                    {
+                        text: "Hello! I'm Idriss's portfolio assistant. How can I help you today?",
+                        sender: 'ai'
+                    }
+                ]);
             }
-          } catch (error) {
-            console.error('Model preload failed:', error);
-            setModelLoaded(true);
-            setMessages([
-              { 
-                text: "Hello! I'm Idriss's portfolio assistant. How can I help you today?", 
-                sender: 'ai' 
-              }
-            ]);
-          }
         };
-      
+
         preloadModel();
         return () => { isMounted = false };
-      }, [isOpen, messages.length]);
+    }, [isOpen, messages.length]);
 
     const getOptimizedContext = (lang) => {
         return `
@@ -102,13 +102,13 @@ export default function Chatbot() {
           ${t('skillsData', { returnObjects: true, lng: lang }).slice(0, 15).join(', ')}...
           
           Education:
-          - ${t('educationData', { returnObjects: true, lng: lang }).map(e => e.title).join('\n- ') || 
+          - ${t('educationData', { returnObjects: true, lng: lang }).map(e => e.title).join('\n- ') ||
             'Currently in a Master in Software Engineering, University of Montpellier\n- Professional License in Digital Systems, University of Avignon\n- DUT in Computer Engineering, EST Sidi Bennour'}
           
           Key experience:
-          ${t('experienceData', { returnObjects: true, lng: lang }).slice(0, 2).map(e => 
-            `- ${e.title} at ${e.company}: ${e.description}`
-          ).join('\n')}
+          ${t('experienceData', { returnObjects: true, lng: lang }).slice(0, 2).map(e =>
+                `- ${e.title} at ${e.company}: ${e.description}`
+            ).join('\n')}
           
           Important notes:
           1. Developed 20+ private applications not visible on GitHub/GitLab
@@ -122,7 +122,7 @@ export default function Chatbot() {
           - Projects: Include links to live demos when available
           - Education: Mention degrees and universities
         `;
-      };
+    };
 
     const sendMessage = async () => {
         if (!message.trim() || isTyping || !modelLoaded) return;
@@ -130,24 +130,29 @@ export default function Chatbot() {
         const userMsg = { text: message, sender: 'user' };
         setMessages(prev => [...prev, userMsg]);
         setMessage('');
-        
+
         setMessages(prev => [...prev, { text: '', sender: 'ai', isTyping: true }]);
         setIsTyping(true);
 
         try {
             const apiUrl = getApiUrl();
-            
+
             // Detect language of the user's message
-            const detectedLang = franc.default(userMsg.text);
-            const languageMap = {
-              'eng': 'en',
-              'fra': 'fr',
-            };
-            const detectedLangCode = languageMap[detectedLang] || 'en';
-            
+
+            console.log('Franc function:', typeof franc, franc);
+            console.log('User message:', userMsg.text);
+            let detectedLangCode = 'en';
+            try {
+                const detectedLang = franc(userMsg.text);
+                detectedLangCode = detectedLang === 'fra' ? 'fr' : 'en';
+            } catch (error) {
+                console.error('Language detection failed:', error);
+                detectedLangCode = 'en';
+            }
+
             // Generate context in the detected language
             const context = getOptimizedContext(detectedLangCode);
-            
+
             // Construct the full prompt with system instructions
             const systemMessage = `
               You are Idriss Chahraoui's portfolio assistant. Here is some information about him:
@@ -180,21 +185,21 @@ ${userMsg.text}
             const decoder = new TextDecoder();
             let responseText = '';
             let aiResponseIndex = -1;
-            
+
             setMessages(prev => {
                 const newMessages = [...prev.filter(msg => !msg.isTyping)];
                 aiResponseIndex = newMessages.length;
                 newMessages.push({ text: '', sender: 'ai' });
                 return newMessages;
             });
-            
+
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) break;
-                
+
                 const chunk = decoder.decode(value, { stream: true });
                 const lines = chunk.split('\n').filter(line => line.trim());
-                
+
                 for (const line of lines) {
                     try {
                         const data = JSON.parse(line);
@@ -203,9 +208,9 @@ ${userMsg.text}
                             setMessages(prev => {
                                 const newMessages = [...prev];
                                 if (aiResponseIndex >= 0 && aiResponseIndex < newMessages.length) {
-                                    newMessages[aiResponseIndex] = { 
-                                        text: responseText, 
-                                        sender: 'ai' 
+                                    newMessages[aiResponseIndex] = {
+                                        text: responseText,
+                                        sender: 'ai'
                                     };
                                 }
                                 return newMessages;
@@ -216,13 +221,13 @@ ${userMsg.text}
                     }
                 }
             }
-            
+
         } catch (error) {
             setMessages(prev => {
                 const newMessages = prev.filter(msg => !msg.isTyping);
-                newMessages.push({ 
-                    text: `Sorry, I encountered an error: ${error.message}. Guess even AI has off days!`, 
-                    sender: 'ai' 
+                newMessages.push({
+                    text: `Sorry, I encountered an error: ${error.message}. Guess even AI has off days!`,
+                    sender: 'ai'
                 });
                 return newMessages;
             });
@@ -255,8 +260,8 @@ ${userMsg.text}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.3 }}
                                         className={`max-w-[80%] p-3 rounded-2xl ${msg.sender === 'user'
-                                                ? 'bg-indigo-500 text-white ml-auto rounded-br-none'
-                                                : 'bg-gray-100 dark:bg-gray-800 rounded-bl-none'
+                                            ? 'bg-indigo-500 text-white ml-auto rounded-br-none'
+                                            : 'bg-gray-100 dark:bg-gray-800 rounded-bl-none'
                                             }`}
                                     >
                                         {msg.isTyping ? (
@@ -264,7 +269,7 @@ ${userMsg.text}
                                                 <motion.div
                                                     className="w-2 h-2 bg-gray-500 rounded-full"
                                                     animate={{ y: [0, -5, 0] }}
-                                                    transition={{ 
+                                                    transition={{
                                                         duration: 0.6,
                                                         repeat: Infinity,
                                                         repeatType: "reverse"
@@ -273,7 +278,7 @@ ${userMsg.text}
                                                 <motion.div
                                                     className="w-2 h-2 bg-gray-500 rounded-full"
                                                     animate={{ y: [0, -5, 0] }}
-                                                    transition={{ 
+                                                    transition={{
                                                         duration: 0.6,
                                                         repeat: Infinity,
                                                         repeatType: "reverse",
@@ -283,7 +288,7 @@ ${userMsg.text}
                                                 <motion.div
                                                     className="w-2 h-2 bg-gray-500 rounded-full"
                                                     animate={{ y: [0, -5, 0] }}
-                                                    transition={{ 
+                                                    transition={{
                                                         duration: 0.6,
                                                         repeat: Infinity,
                                                         repeatType: "reverse",
