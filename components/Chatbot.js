@@ -143,7 +143,7 @@ export default function Chatbot() {
               'eng': 'en',
               'fra': 'fr',
             };
-            const detectedLangCode = languageMap[detectedLang] || 'en';
+            const detectedLangCode = 'en';
             
             // Generate context in the detected language
             const context = getOptimizedContext(detectedLangCode);
