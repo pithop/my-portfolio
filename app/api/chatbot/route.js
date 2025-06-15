@@ -2,7 +2,8 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   const body = await req.json();
-  const targetUrl = 'http://34.29.82.146:11434/api/generate';
+  // Update to your current VM IP
+  const targetUrl = 'http://34.60.196.36:11434/api/generate';
   
   try {
     const res = await fetch(targetUrl, {
