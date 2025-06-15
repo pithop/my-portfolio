@@ -176,7 +176,7 @@ export default function GitHubStats() {
         <div>
           <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitLab</h3>
           <p className="text-sm italic text-gray-500 dark:text-gray-400 mt-2">
-            Note: I've developed 20+ additional applications that are not publicly
+            Note: I&apos;ve developed 20+ additional applications that are not publicly
             available due to client confidentiality agreements and company policies.
             These include enterprise solutions, internal tools, and client projects.
           </p>
