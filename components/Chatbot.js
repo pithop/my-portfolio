@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import franc from 'franc-min';
 
 const getApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
@@ -32,14 +33,12 @@ export default function Chatbot() {
         scrollToBottom();
     }, [messages.length]);
 
-    // Preload model and set up initial welcome message
     useEffect(() => {
         if (!isOpen) return;
         let isMounted = true;
         
         const preloadModel = async () => {
           try {
-            // Skip preload in production (handled by proxy)
             if (process.env.NODE_ENV === 'production') {
               setModelLoaded(true);
               if (messages.length === 0) {
@@ -51,14 +50,12 @@ export default function Chatbot() {
               return;
             }
 
-            // Check if environment variable is set
             if (!process.env.NEXT_PUBLIC_CHATBOT_URL) {
               throw new Error('Chatbot URL not configured');
             }
             
             const apiUrl = getApiUrl();
             
-            // Preload request
             const response = await fetch(apiUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -75,7 +72,6 @@ export default function Chatbot() {
             
             setModelLoaded(true);
             
-            // Add welcome message only once when model loads
             if (messages.length === 0) {
               setMessages([
                 { 
@@ -86,7 +82,7 @@ export default function Chatbot() {
             }
           } catch (error) {
             console.error('Model preload failed:', error);
-            setModelLoaded(true); // Still allow sending messages
+            setModelLoaded(true);
             setMessages([
               { 
                 text: "Hello! I'm Idriss's portfolio assistant. How can I help you today?", 
@@ -100,20 +96,17 @@ export default function Chatbot() {
         return () => { isMounted = false };
       }, [isOpen, messages.length]);
 
-    // Optimized context generation
-    const getOptimizedContext = () => {
+    const getOptimizedContext = (lang) => {
         return `
-          You are an assistant for Idriss Chahraoui's portfolio. 
           Idriss is a full-stack developer with expertise in:
-          ${t('skillsData', { returnObjects: true }).slice(0, 15).join(', ')}...
+          ${t('skillsData', { returnObjects: true, lng: lang }).slice(0, 15).join(', ')}...
           
           Education:
-          - Currently in a Master in Software Engineering, University of Montpellier
-          - Professional License in Digital Systems, University of Avignon
-          - DUT in Computer Engineering, EST Sidi Bennour
+          - ${t('educationData', { returnObjects: true, lng: lang }).map(e => e.title).join('\n- ') || 
+            'Currently in a Master in Software Engineering, University of Montpellier\n- Professional License in Digital Systems, University of Avignon\n- DUT in Computer Engineering, EST Sidi Bennour'}
           
           Key experience:
-          ${t('experienceData', { returnObjects: true }).slice(0, 2).map(e => 
+          ${t('experienceData', { returnObjects: true, lng: lang }).slice(0, 2).map(e => 
             `- ${e.title} at ${e.company}: ${e.description}`
           ).join('\n')}
           
@@ -128,35 +121,56 @@ export default function Chatbot() {
           - Experience: Provide details with technologies used
           - Projects: Include links to live demos when available
           - Education: Mention degrees and universities
-          
-          Answer in the same language as the question, using markdown for formatting.
         `;
       };
 
     const sendMessage = async () => {
         if (!message.trim() || isTyping || !modelLoaded) return;
 
-        // Add user message
         const userMsg = { text: message, sender: 'user' };
         setMessages(prev => [...prev, userMsg]);
         setMessage('');
         
-        // Add typing indicator
         setMessages(prev => [...prev, { text: '', sender: 'ai', isTyping: true }]);
         setIsTyping(true);
 
         try {
             const apiUrl = getApiUrl();
-            const context = getOptimizedContext();
             
-            // Use streaming API for faster responses
+            // Detect language of the user's message
+            const detectedLang = franc(userMsg.text);
+            const languageMap = {
+              'eng': 'en',
+              'fra': 'fr',
+            };
+            const detectedLangCode = languageMap[detectedLang] || 'en';
+            
+            // Generate context in the detected language
+            const context = getOptimizedContext(detectedLangCode);
+            
+            // Construct the full prompt with system instructions
+            const systemMessage = `
+              You are Idriss Chahraoui's portfolio assistant. Here is some information about him:
+              ${context}
+              Provide concise, professional responses in 1-2 sentences. 
+              Add a touch of subtle, professional humor when appropriate (e.g., a light-hearted remark or witty twist). 
+              Always respond in the same language as the user's question, using markdown for formatting.
+            `;
+            const fullPrompt = `<system>
+${systemMessage}
+</system>
+<user>
+${userMsg.text}
+</user>
+<response>`;
+
             const res = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     model: 'portfolio-gemma',
-                    prompt: `${context}\n\nUser: ${userMsg.text}\nAssistant:`,
-                    stream: true,  // Enable streaming
+                    prompt: fullPrompt,
+                    stream: true,
                 }),
             });
 
@@ -167,7 +181,6 @@ export default function Chatbot() {
             let responseText = '';
             let aiResponseIndex = -1;
             
-            // Create a placeholder for the AI response
             setMessages(prev => {
                 const newMessages = [...prev.filter(msg => !msg.isTyping)];
                 aiResponseIndex = newMessages.length;
@@ -175,7 +188,6 @@ export default function Chatbot() {
                 return newMessages;
             });
             
-            // Process streamed response
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) break;
@@ -188,8 +200,6 @@ export default function Chatbot() {
                         const data = JSON.parse(line);
                         if (data.response) {
                             responseText += data.response;
-                            
-                            // Update the specific AI message
                             setMessages(prev => {
                                 const newMessages = [...prev];
                                 if (aiResponseIndex >= 0 && aiResponseIndex < newMessages.length) {
@@ -211,7 +221,7 @@ export default function Chatbot() {
             setMessages(prev => {
                 const newMessages = prev.filter(msg => !msg.isTyping);
                 newMessages.push({ 
-                    text: `Sorry, I encountered an error: ${error.message}`, 
+                    text: `Sorry, I encountered an error: ${error.message}. Guess even AI has off days!`, 
                     sender: 'ai' 
                 });
                 return newMessages;
