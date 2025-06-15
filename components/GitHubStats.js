@@ -19,12 +19,12 @@ export default function GitHubStats() {
         'User-Agent': 'Portfolio-App',
         'Accept': 'application/vnd.github.v3+json'
       };
-      
+
       // Fetch user data
       const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`, { headers });
       if (!userResponse.ok) throw new Error(`GitHub user API error: ${userResponse.status}`);
       const userData = await userResponse.json();
-      
+
       setGithubStats({
         publicRepos: userData.public_repos || 0,
         followers: userData.followers || 0,
@@ -34,23 +34,23 @@ export default function GitHubStats() {
       let allRepos = [];
       let page = 1;
       let hasMore = true;
-      
+
       while (hasMore) {
         const reposResponse = await fetch(
-          `https://api.github.com/users/${githubUsername}/repos?per_page=100&page=${page}`, 
+          `https://api.github.com/users/${githubUsername}/repos?per_page=100&page=${page}`,
           { headers }
         );
-        
+
         if (!reposResponse.ok) throw new Error(`GitHub repos API error: ${reposResponse.status}`);
-        
+
         const reposData = await reposResponse.json();
         allRepos = [...allRepos, ...reposData];
-        
+
         // Check if more pages exist
         hasMore = reposData.length === 100;
         page++;
       }
-      
+
       setGithubRepos(allRepos);
       setGithubError('');
     } catch (error) {
@@ -64,32 +64,32 @@ export default function GitHubStats() {
       // Fetch GitLab user ID
       const userResponse = await fetch(`https://gitlab.com/api/v4/users?username=${gitlabUsername}`);
       if (!userResponse.ok) throw new Error(`GitLab user API error: ${userResponse.status}`);
-      
+
       const userData = await userResponse.json();
       if (!userData.length) throw new Error('GitLab user not found');
-      
+
       const userId = userData[0].id;
-      
+
       // Fetch all projects with pagination
       let allProjects = [];
       let page = 1;
       let hasMore = true;
-      
+
       while (hasMore) {
         const projectsResponse = await fetch(
           `https://gitlab.com/api/v4/users/${userId}/projects?per_page=100&page=${page}`
         );
-        
+
         if (!projectsResponse.ok) throw new Error(`GitLab projects API error: ${projectsResponse.status}`);
-        
+
         const projectsData = await projectsResponse.json();
         allProjects = [...allProjects, ...projectsData];
-        
+
         // Check if more pages exist
         hasMore = projectsData.length === 100;
         page++;
       }
-      
+
       setGitlabProjects(allProjects);
       setGitlabError('');
     } catch (error) {
@@ -122,8 +122,8 @@ export default function GitHubStats() {
             <div className="text-red-500 mb-4">
               {githubError}
               <p className="mt-2">
-                <a 
-                  href={`https://github.com/${githubUsername}`} 
+                <a
+                  href={`https://github.com/${githubUsername}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
@@ -136,7 +136,7 @@ export default function GitHubStats() {
           <p className="text-gray-700 dark:text-gray-300">Public Repos: {githubStats.publicRepos}</p>
           <p className="text-gray-700 dark:text-gray-300">Followers: {githubStats.followers}</p>
           <h4 className="text-xl font-semibold mt-4 mb-2">Top Repositories</h4>
-          
+
           {githubRepos.length === 0 ? (
             <p className="text-gray-600 dark:text-gray-400">
               {githubError ? 'Failed to load repositories' : 'Loading GitHub repositories...'}
@@ -157,7 +157,7 @@ export default function GitHubStats() {
               ))}
             </ul>
           )}
-          
+
           {githubRepos.length > 10 && (
             <p className="mt-2">
               <a
@@ -175,12 +175,17 @@ export default function GitHubStats() {
         {/* GitLab Section */}
         <div>
           <h3 className="text-2xl font-bold mb-4 text-indigo-500">GitLab</h3>
+          <p className="text-sm italic text-gray-500 dark:text-gray-400 mt-2">
+            Note: I've developed 20+ additional applications that are not publicly
+            available due to client confidentiality agreements and company policies.
+            These include enterprise solutions, internal tools, and client projects.
+          </p>
           {gitlabError && (
             <div className="text-red-500 mb-4">
               {gitlabError}
               <p className="mt-2">
-                <a 
-                  href={`https://gitlab.com/${gitlabUsername}`} 
+                <a
+                  href={`https://gitlab.com/${gitlabUsername}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
@@ -192,7 +197,7 @@ export default function GitHubStats() {
           )}
           <p className="text-gray-700 dark:text-gray-300">Projects: {gitlabProjects.length}</p>
           <h4 className="text-xl font-semibold mt-4 mb-2">Top Projects</h4>
-          
+
           {gitlabProjects.length === 0 ? (
             <p className="text-gray-600 dark:text-gray-400">
               {gitlabError ? 'Failed to load projects' : 'Loading GitLab projects...'}
@@ -213,7 +218,7 @@ export default function GitHubStats() {
               ))}
             </ul>
           )}
-          
+
           {gitlabProjects.length > 10 && (
             <p className="mt-2">
               <a

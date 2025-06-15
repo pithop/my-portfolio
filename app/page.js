@@ -247,6 +247,35 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <section id="private-projects" className="section-padding bg-gray-50 dark:bg-gray-800">
+        <div className="container-padding">
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold mb-12 text-center"
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            {t('enterpriseProjectsTitle')}
+          </motion.h2>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-glass p-6 rounded-lg">
+              <p className="text-lg mb-4">
+                {t('enterpriseProjectsContent')}
+              </p>
+              <ul className="list-disc pl-5 space-y-2">
+                {t('enterpriseProjectsList', { returnObjects: true }).map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+              <p className="mt-4 italic">
+                {t('enterpriseProjectsNote')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Contact Section */}
       <section id="contact" className="section-padding bg-gradient-to-br from-indigo-500 to-indigo-700 text-white relative z-10">
