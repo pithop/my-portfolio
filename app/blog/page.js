@@ -1,73 +1,68 @@
 // app/blog/page.js
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import matter from 'gray-matter'; // Make sure you have this installed
+import matter from 'gray-matter';
 
-export default function BlogPage() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Helper function to fetch posts from your GitHub repo
+async function getPosts() {
+  const owner = 'pithop';
+  const repo = 'my-portfolio-blog';
+  const path = 'posts';
+  const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const owner = 'pithop';
-        const repo = 'my-portfolio-blog';
-        const path = 'posts';
-        const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-
-        // Fetch list of files from GitHub API
-        const response = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-          {
-            headers: token ? { Authorization: `token ${token}` } : {}
-          }
-        );
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const files = await response.json();
-        const postsData = [];
-
-        for (const file of files) {
-          if (file.type === 'dir') continue;
-          
-          // Use our proxy to fetch the content
-          const proxyUrl = `/api/github-content?path=${owner}/${repo}/main/${file.path}`;
-          const contentResponse = await fetch(proxyUrl);
-          
-          if (!contentResponse.ok) {
-            console.error(`Failed to fetch content for ${file.name}`);
-            continue;
-          }
-          
-          const content = await contentResponse.text();
-          const { data } = matter(content);
-          postsData.push({
-            slug: file.name.replace('.md', ''),
-            title: data.title,
-            date: data.date,
-            excerpt: data.excerpt,
-          });
+  try {
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      {
+        headers: {
+          Accept: 'application/vnd.github.v3+json',
+          Authorization: `token ${token}`,
+          'User-Agent': 'request',
+        },
+        next: {
+            revalidate: 60, // Revalidate cache every 60 seconds
         }
-
-        setPosts(postsData);
-      } catch (err) {
-        setError(err.message);
-        console.error('Error fetching posts:', err);
-      } finally {
-        setLoading(false);
       }
-    };
+    );
 
-    fetchPosts();
-  }, []);
+    if (!response.ok) {
+        console.error("Failed to fetch posts list:", await response.text());
+        return [];
+    }
+    
+    const files = await response.json();
+    
+    if (!Array.isArray(files)) {
+        console.error("Expected an array of files, but got:", files);
+        return [];
+    }
 
-  if (loading) return <div className="container-padding py-20 text-center">Loading blog posts...</div>;
-  if (error) return <div className="container-padding py-20 text-center">Error: {error}</div>;
+    const postsData = await Promise.all(
+        files
+            .filter(file => file.name.endsWith('.md'))
+            .map(async (file) => {
+                const contentResponse = await fetch(file.download_url);
+                const content = await contentResponse.text();
+                const { data } = matter(content);
+                return {
+                    slug: file.name.replace('.md', ''),
+                    title: data.title || 'Untitled Post',
+                    date: data.date || 'No Date',
+                    excerpt: data.excerpt || '',
+                };
+            })
+    );
+
+    // Sort posts by date, most recent first
+    return postsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  } catch (err) {
+    console.error('Error in getPosts:', err);
+    return [];
+  }
+}
+
+export default async function BlogPage() {
+  const posts = await getPosts();
 
   return (
     <div className="container-padding py-20">
@@ -78,7 +73,7 @@ export default function BlogPage() {
           {posts.map((post) => (
             <div key={post.slug} className="bg-glass rounded-2xl p-6 shadow-lg">
               <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{post.date}</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{new Date(post.date).toLocaleDateString()}</p>
               <p className="mb-6">{post.excerpt}</p>
               <Link href={`/blog/${post.slug}`} className="text-indigo-500 hover:underline">
                 Read More →
@@ -86,8 +81,8 @@ export default function BlogPage() {
             </div>
           ))}
         </div>
-      ) : !loading && (
-        <p className="text-center py-10">No blog posts found. Check back soon!</p>
+      ) : (
+        <p className="text-center py-10">No blog posts found or failed to load. Check back soon!</p>
       )}
     </div>
   );
