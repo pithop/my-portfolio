@@ -7,7 +7,6 @@ module.exports = {
   darkMode: 'class', // Make sure dark mode is enabled
   theme: {
     extend: {
-      // Define your custom colors here
       colors: {
         dark: '#0f172a',    // Your custom dark color
         light: '#f8fafc',   // Your custom light color
