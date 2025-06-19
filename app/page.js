@@ -17,7 +17,7 @@ export default function Home() {
   const particlesInit = async (engine) => {
     await loadSlim(engine);
   };
-  
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <main className="flex flex-col">
 
-      <section id="hero" className="min-h-screen flex items-center relative overflow-hidden">
+      <section id="hero" className="min-h-screen flex items-center relative overflow-hidden bg-light dark:bg-dark">
         <div className="absolute inset-0 z-0">
           <Particles
             id="tsparticles"
@@ -46,11 +46,11 @@ export default function Home() {
                 },
               },
               particles: {
-                color: { value: "#a5b4fc" }, // Indigo-300
+                color: { value: "#6366f1" }, // Use a color visible on both backgrounds
                 links: { color: "#818cf8", distance: 150, enable: true, opacity: 0.2, width: 1 },
-                move: { enable: true, speed: 1, direction: "none", random: false, straight: false, outModes: { default: "out" } },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, outModes: { default: "out" } },
                 number: { density: { enable: true, area: 800 }, value: 80 },
-                opacity: { value: 0.3 },
+                opacity: { value: 0.5 },
                 shape: { type: "circle" },
                 size: { value: { min: 1, max: 3 } },
               },
@@ -61,17 +61,19 @@ export default function Home() {
         </div>
 
         <div className="container-padding w-full z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Left Column: Text and CTAs */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl lg:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400">
+              {/* FIXED: Added dark text for light mode, light text for dark mode */}
+              <h1 className="text-5xl lg:text-7xl font-extrabold mb-4 text-slate-800 dark:text-white">
                 {t('welcome')}
               </h1>
-              <p className="text-xl lg:text-2xl text-indigo-200 mb-8">
+              {/* FIXED: Added dark text for light mode, light text for dark mode */}
+              <p className="text-xl lg:text-2xl text-slate-600 dark:text-indigo-200 mb-8">
                 {t('tagline')}
               </p>
               <div className="flex flex-wrap gap-4">
