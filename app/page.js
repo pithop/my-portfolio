@@ -17,10 +17,17 @@ export default function Home() {
   const particlesInit = async (engine) => {
     await loadSlim(engine);
   };
+  
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <main className="flex flex-col">
-      
+
       <section id="hero" className="min-h-screen flex items-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Particles
