@@ -5,6 +5,25 @@ import html from 'remark-html';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+export async function generateMetadata({ params }) {
+  const post = await getPost(params.slug);
+
+  if (!post) {
+      return {
+          title: 'Post Not Found',
+      };
+  }
+
+  return {
+      title: `${post.title} | Idriss Chahraoui's Blog`,
+      description: post.excerpt,
+      openGraph: {
+          title: post.title,
+          description: post.excerpt,
+          images: ['/og.jpg'], // You can dynamically generate these too!
+      },
+  };
+}
 // Helper function to fetch a single post
 async function getPost(slug) {
   const owner = 'pithop';

@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import Particles from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import ContactForm from '../components/ContactForm';
+import Terminal from '../components/Terminal';
 export default function Home() {
   const { t } = useTranslation();
 
@@ -109,9 +110,7 @@ export default function Home() {
             className="max-w-4xl mx-auto text-center"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('aboutTitle')}</h2>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-12">
-              {t('aboutContent')}
-            </p>
+            <Terminal />
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
               <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl text-center">

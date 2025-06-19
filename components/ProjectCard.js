@@ -16,13 +16,20 @@ export default function ProjectCard({ project, index }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
     >
-      <div className="h-48 relative bg-gray-200 dark:bg-gray-700">
-        <Image 
-          src={getImageUrl()}
-          alt={project.title}
-          fill
-          className="object-cover"
-        />
+      <div className="h-48 relative bg-gray-200 dark:bg-gray-700 overflow-hidden">
+        {/* Add a motion.div wrapper for the image */}
+        <motion.div
+            className="w-full h-full"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+            <Image 
+              src={getImageUrl()}
+              alt={project.title}
+              fill
+              className="object-cover"
+            />
+        </motion.div>
       </div>
       <div className="p-6">
         <h3 className="text-xl font-bold mb-2">{project.title}</h3>
