@@ -15,7 +15,8 @@ export default function BlogHeader() {
   return (
     <header className="sticky top-0 w-full p-4 bg-glass shadow-md z-10">
       <nav className="flex justify-between items-center max-w-7xl mx-auto">
-        <Link href="/" className="text-xl font-bold">
+        {/* This Link now correctly points to your homepage */}
+        <Link href="/" className="text-xl font-bold hover:text-indigo-400 transition-colors">
           ← Back to Portfolio
         </Link>
         

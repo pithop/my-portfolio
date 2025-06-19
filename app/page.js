@@ -20,36 +20,31 @@ export default function Home() {
 
   return (
     <main className="flex flex-col">
-      {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      
+      <section id="hero" className="min-h-screen flex items-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Particles
             id="tsparticles"
             init={particlesInit}
             options={{
-              fullScreen: false,
               background: { color: { value: "transparent" } },
               fpsLimit: 120,
+              interactivity: {
+                events: {
+                  onHover: { enable: true, mode: "repulse" },
+                  resize: true,
+                },
+                modes: {
+                  repulse: { distance: 100, duration: 0.4 },
+                },
+              },
               particles: {
-                color: { value: "#ffffff" },
-                links: {
-                  color: "#ffffff",
-                  distance: 150,
-                  enable: true,
-                  opacity: 0.3,
-                  width: 1
-                },
-                move: {
-                  enable: true,
-                  speed: 1.5,
-                  direction: "none",
-                  outModes: "bounce"
-                },
-                number: {
-                  density: { enable: true, area: 800 },
-                  value: 100
-                },
-                opacity: { value: 0.5 },
+                color: { value: "#a5b4fc" }, // Indigo-300
+                links: { color: "#818cf8", distance: 150, enable: true, opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 1, direction: "none", random: false, straight: false, outModes: { default: "out" } },
+                number: { density: { enable: true, area: 800 }, value: 80 },
+                opacity: { value: 0.3 },
+                shape: { type: "circle" },
                 size: { value: { min: 1, max: 3 } },
               },
               detectRetina: true,
@@ -58,44 +53,39 @@ export default function Home() {
           />
         </div>
 
-        <div className="container-padding text-center z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto"
-          >
-            <motion.h1
-              className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-indigo-300"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              {t('welcome')}
-            </motion.h1>
-
-            <motion.p
-              className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto text-gray-700 dark:text-gray-300"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            >
-              {t('tagline')}
-            </motion.p>
-
+        <div className="container-padding w-full z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Left Column: Text and CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <button
-                onClick={generateResumePDF}
-                className="btn-primary"
-              >
-                {t('downloadResume')}
-              </button>
+              <h1 className="text-5xl lg:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-indigo-400">
+                {t('welcome')}
+              </h1>
+              <p className="text-xl lg:text-2xl text-indigo-200 mb-8">
+                {t('tagline')}
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button onClick={generateResumePDF} className="btn-primary">
+                  {t('downloadResume')}
+                </button>
+                <button onClick={scrollToContact} className="btn-secondary">
+                  Contactez-moi
+                </button>
+              </div>
             </motion.div>
-          </motion.div>
+            
+            {/* Right Column: Interactive Terminal */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Terminal />
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -105,13 +95,14 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('aboutTitle')}</h2>
-            <Terminal />
-
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('aboutcontentTitle')}</h2>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-12">
+              {t('aboutContent')}
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
               <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl text-center">
                 <div className="text-3xl font-bold text-indigo-500">3+</div>
