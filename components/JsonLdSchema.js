@@ -11,7 +11,7 @@ const JsonLdSchema = () => {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Idriss Chahraoui',
-    url: 'https://my-portfolio-jbew.vercel.app', // Replace with your final domain
+    url: 'https://www.chahraouiidriss.fr.eu.org', // Replace with your final domain
     sameAs: [
       'https://github.com/pithop',
       'https://gitlab.com/chahraouiidriss',
