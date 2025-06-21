@@ -20,11 +20,11 @@ export const metadata = {
   openGraph: {
     title: 'Idriss Chahraoui - Software Engineer',
     description: 'Explore the portfolio of Idriss Chahraoui, showcasing projects in web development and AI.',
-    url: 'https://my-portfolio-jbew.vercel.app', // Replace with your final domain
+    url: 'https://chahraouiidriss.fr.eu.org', // Replace with your final domain
     siteName: 'Idriss Chahraoui Portfolio',
     images: [
       {
-        url: '/og.jpg', // Make sure this image exists in your public folder
+        url: 'https://chahraouiidriss.fr.eu.org/og.jpg', // Make sure this image exists in your public folder
         width: 1200,
         height: 630,
       },

@@ -1,4 +1,4 @@
 module.exports = {
-    siteUrl: 'https://my-portfolio-jbew.vercel.app', // Replace with your actual site URL
+    siteUrl: 'https://chahraouiidriss.fr.eu.org', // Replace with your actual site URL
     generateRobotsTxt: true, // Optional: generates a robots.txt file
   };
