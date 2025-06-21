@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://my-portfolio-jbew.vercel.app
+Host: https://chahraouiidriss.fr.eu.org
 
 # Sitemaps
-Sitemap: https://my-portfolio-jbew.vercel.app/sitemap.xml
+Sitemap: https://chahraouiidriss.fr.eu.org/sitemap.xml
