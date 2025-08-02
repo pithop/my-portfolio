@@ -33,7 +33,6 @@ export async function POST(req) {
         });
     }
 
-    // Convert the incoming 'prompt' string into the required 'messages' array
     const messages = parsePromptToMessages(prompt);
 
     if (messages.length < 2) {
@@ -46,7 +45,7 @@ export async function POST(req) {
     // --- 🚀 CHOOSE YOUR MODEL HERE ---
     // Swap this with any other free model from OpenRouter's website.
     // Examples: "mistralai/mistral-7b-instruct:free", "huggingfaceh4/zephyr-7b-beta:free"
-    const modelToUse = "deepseek/deepseek-chat-v3-0324:free";
+    const modelToUse = "mistralai/mistral-7b-instruct:free";
     // ------------------------------------
 
     const openRouterRequestBody = {
