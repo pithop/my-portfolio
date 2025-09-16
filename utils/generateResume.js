@@ -1,6 +1,6 @@
 export const generateResumePDF = () => {
   // Path to the resume in the public folder
-  const resumeUrl = 'CV_Chahraoui_Idriss_MAALSI.pdf';
+  const resumeUrl = 'CV_Idriss_CHAHRAOUI.pdf';
   
   // Create a temporary anchor to trigger download
   const link = document.createElement('a');
