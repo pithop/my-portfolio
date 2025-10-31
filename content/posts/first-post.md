@@ -1,12 +1,18 @@
 ---
-title: "My First Blog Post"
-date: "2025-06-13"
-excerpt: "Welcome to my new blog about software development"
+title: 'Mon Premier Article'
+pubDate: 2025-10-31
+description: 'Ceci est le premier article de mon blog Astro.'
+author: 'Idris Chahraoui'
+tags: ["astro", "blogging", "développement"]
+draft: false
 ---
 
-This is my **first blog post**! 
+## Bienvenue sur mon blog
 
-## What I'll Cover
-- Web development
-- AI trends
-- Career advice
+Ceci est le contenu de mon premier article. Je peux écrire du texte ici en utilisant la syntaxe **Markdown**.
+
+### Mes objectifs
+
+* Partager mes connaissances
+* Documenter mon parcours
+* Tester cette fonctionnalité
