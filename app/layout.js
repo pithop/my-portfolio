@@ -2,10 +2,19 @@ import Providers from '../components/Providers';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ScrollProgressBar from '../components/ScrollProgressBar';
+import CustomCursor from '../components/CustomCursor';
+import NoiseOverlay from '../components/NoiseOverlay';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistSans } from 'geist/font/sans';
+import { Outfit } from 'next/font/google';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
 import JsonLdSchema from '../components/JsonLdSchema';
 
 // SEO: Define base metadata for the entire site
@@ -46,12 +55,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={GeistSans.className}>
+    <html lang="fr" suppressHydrationWarning className={`${GeistSans.variable} ${outfit.variable} font-sans`}>
       <head>
         {/* Adds structured data for Google */}
         <JsonLdSchema />
       </head>
       <body suppressHydrationWarning>
+        <NoiseOverlay />
+        <CustomCursor />
         <Providers>
           <ScrollProgressBar />
           <Header />

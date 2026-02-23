@@ -1,0 +1,82 @@
+[
+    {
+        "title": "Callbot IA - Pipeline Microservices",
+        "slug": "callbot-ia-poc",
+        "description": "Proof of Concept d'un agent vocal conversationnel. Une pipeline d'IA complète orchestrée pour comprendre et répondre vocalement en temps réel.",
+        "technologies": "Python, FastAPI, Faster-Whisper, API Groq (LLaMA 3), Coqui-TTS",
+        "problem": "Le défi était de concevoir le socle backend d'un callbot IA capable d'enchaîner l'écoute, la réflexion et la parole. L'enjeu technique majeur résidait dans la gestion de la latence globale et l'intégration de modèles d'Intelligence Artificielle complexes.",
+        "solution": "J'ai conçu une architecture orientée microservices avec FastAPI, divisant le système en 4 nœuds communicants (Orchestrateur, STT, NLP, TTS). Pour minimiser le temps de réponse, j'ai déporté le traitement LLM sur une API haute performance, tout en gérant l'inférence vocale dans des environnements isolés.",
+        "impact": [
+            "Conception d'une architecture microservices (4 API) permettant de séparer les responsabilités.",
+            "Intégration d'une pipeline IA de bout en bout couplant des modèles ML locaux à une API externe ultra-rapide.",
+            "Résolution experte de conflits de dépendances Python complexes."
+        ],
+        "githubUrl": "https://github.com/pithop/mon-callbot-poc",
+        "homepage": "",
+        "image": "/projects/callbot-ia-poc.png"
+    },
+    {
+        "title": "ProspectHub - CRM & Lead Generation",
+        "slug": "prospecthub",
+        "description": "Plateforme SaaS B2B de gestion de prospects avec qualification intelligente et tableaux de bord analytiques.",
+        "technologies": "Next.js, React, Supabase (PostgreSQL), API Routes (Serverless)",
+        "problem": "L'agence YonyaLabs avait besoin d'un outil interne pour centraliser et qualifier des milliers de leads. Le défi était de traiter de gros volumes de données tout en filtrant automatiquement les prospects à forte valeur ajoutée.",
+        "solution": "J'ai développé une architecture Serverless avec Next.js couplée à une base de données PostgreSQL via Supabase. J'ai implémenté un algorithme de qualification automatique qui différencie les vrais domaines des simples pages de réseaux sociaux, optimisant les pipelines de prospection.",
+        "impact": [
+            "Création d'un système d'importation en masse (Bulk JSON) optimisé pour de grands volumes de données.",
+            "Développement d'un algorithme de filtrage intelligent pour la qualification de leads.",
+            "Mise en place d'une architecture sécurisée avec Row Level Security (RLS)."
+        ],
+        "githubUrl": "https://github.com/pithop/prospects",
+        "homepage": "https://www.prospecthub.app",
+        "image": "/projects/prospecthub.png"
+    },
+    {
+        "title": "Mitake Ramen - Plateforme de Commande",
+        "slug": "mitake-ramen",
+        "description": "Application web full-stack de prise de commande sur-mesure avec intégration matérielle en cuisine.",
+        "technologies": "Next.js, Node.js, WebSockets, API d'impression",
+        "problem": "Le restaurant souhaitait digitaliser sa prise de commande (Pay on Delivery) sans subir les commissions des plateformes tierces, tout en gardant une synchronisation parfaite avec le flux de travail physique en cuisine.",
+        "solution": "J'ai construit une plateforme 'from scratch' intégrant un système de commande en ligne couplé à une communication réseau locale. Lorsqu'une commande est validée en ligne, elle déclenche automatiquement l'impression d'un ticket physique sur l'imprimante de la cuisine.",
+        "impact": [
+            "Intégration logicielle et matérielle complexe (Web vers Imprimante physique en temps réel).",
+            "Développement d'un système de commande propriétaire avec paiement à la livraison.",
+            "Optimisation SEO avancée pour capturer le trafic local sur Aix-en-Provence."
+        ],
+        "githubUrl": "https://github.com/pithop/mitake-ramen",
+        "homepage": "https://www.mitakeramen.page",
+        "image": "/projects/mitake-ramen.png"
+    },
+    {
+        "title": "LeBazare - E-commerce Custom",
+        "slug": "lebazare",
+        "description": "Plateforme e-commerce artisanale développée entièrement sur-mesure, incluant gestion des stocks et paiements sécurisés.",
+        "technologies": "Next.js, Stripe API, PostgreSQL",
+        "problem": "La marque avait besoin d'une boutique en ligne avec une identité forte, mais souhaitait éviter la dépendance technologique et les coûts récurrents des CMS traditionnels (comme Shopify), tout en exigeant une gestion de stock irréprochable.",
+        "solution": "J'ai architecturé une solution e-commerce 'from scratch' sans aucun CMS tiers. J'ai intégré l'API Stripe pour sécuriser les transactions financières et développé un back-office sur-mesure permettant une synchronisation en temps réel des stocks.",
+        "impact": [
+            "Intégration complète et sécurisée des flux de paiement via l'API Stripe.",
+            "Développement d'un moteur de gestion de stock propriétaire fonctionnant en temps réel.",
+            "Création d'une architecture 100% indépendante, maximisant les marges du client et le contrôle technique."
+        ],
+        "githubUrl": "https://github.com/pithop/lebazare-shop",
+        "homepage": "https://www.lebazare.fr",
+        "image": "/projects/lebazare.png"
+    },
+    {
+        "title": "YonyaLabs - Agence Web B2B",
+        "slug": "yonyalabs",
+        "description": "Plateforme commerciale et vitrine digitale orientée conversion, intégrant des outils interactifs d'aide à la vente.",
+        "technologies": "Next.js, React, Tailwind CSS",
+        "problem": "Pour lancer notre agence ciblant les commerçants, nous devions prouver notre expertise technique par l'exemple, tout en éduquant nos prospects B2B sur le retour sur investissement d'un site premium.",
+        "solution": "J'ai co-développé une application front-end ultra-optimisée. Pour engager les utilisateurs, j'ai conçu un simulateur de ROI dynamique. L'architecture a été pensée pour garantir des scores 'Core Web Vitals' parfaits afin de s'en servir comme argument de vente.",
+        "impact": [
+            "Création d'un calculateur de Retour sur Investissement (ROI) interactif pour l'engagement prospect.",
+            "Développement d'une interface premium (UI/UX) avec des métriques de performance.",
+            "Mise en production d'une plateforme vitrine à très haute performance SEO."
+        ],
+        "githubUrl": "https://github.com/pithop/YONYALABS",
+        "homepage": "https://www.yonyalabs.com",
+        "image": "/projects/yonyalabs.png"
+    }
+]

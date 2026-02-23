@@ -4,14 +4,19 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class', // Make sure dark mode is enabled
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        dark: '#0f172a',    // Your custom dark color
-        light: '#f8fafc',   // Your custom light color
-        primary: '#6366f1', // Your custom primary color
+        dark: '#030712',    // Deeper dark (gray-950)
+        light: '#fafafa',   // Clean neutral light
+        primary: '#3b82f6', // Blueprint blue
+        accent: '#8b5cf6',  // Violet accent for gradients
       },
+      fontFamily: {
+        sans: ['var(--font-geist-sans)', 'sans-serif'],
+        display: ['var(--font-outfit)', 'sans-serif'],
+      }
     },
   },
   plugins: [

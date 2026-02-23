@@ -10,46 +10,50 @@ async function getPosts() {
   const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
   try {
+    const headers = {
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'request',
+    };
+    if (token) {
+      headers['Authorization'] = `token ${token}`;
+    }
+
     const response = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
       {
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-          Authorization: `token ${token}`,
-          'User-Agent': 'request',
-        },
+        headers,
         next: {
-            revalidate: 60, // Revalidate cache every 60 seconds
+          revalidate: 60, // Revalidate cache every 60 seconds
         }
       }
     );
 
     if (!response.ok) {
-        console.error("Failed to fetch posts list:", await response.text());
-        return [];
+      console.error(`Failed to fetch posts list: ${response.status} ${response.statusText}`);
+      return []; // Return empty array to gracefully handle missing/invalid credentials
     }
-    
+
     const files = await response.json();
-    
+
     if (!Array.isArray(files)) {
-        console.error("Expected an array of files, but got:", files);
-        return [];
+      console.error("Expected an array of files, but got:", files);
+      return [];
     }
 
     const postsData = await Promise.all(
-        files
-            .filter(file => file.name.endsWith('.md'))
-            .map(async (file) => {
-                const contentResponse = await fetch(file.download_url);
-                const content = await contentResponse.text();
-                const { data } = matter(content);
-                return {
-                    slug: file.name.replace('.md', ''),
-                    title: data.title || 'Untitled Post',
-                    date: data.date || 'No Date',
-                    excerpt: data.excerpt || '',
-                };
-            })
+      files
+        .filter(file => file.name.endsWith('.md'))
+        .map(async (file) => {
+          const contentResponse = await fetch(file.download_url);
+          const content = await contentResponse.text();
+          const { data } = matter(content);
+          return {
+            slug: file.name.replace('.md', ''),
+            title: data.title || 'Untitled Post',
+            date: data.date || 'No Date',
+            excerpt: data.excerpt || '',
+          };
+        })
     );
 
     // Sort posts by date, most recent first
