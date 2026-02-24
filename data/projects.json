@@ -29,7 +29,8 @@
         ],
         "githubUrl": "https://github.com/pithop/prospects",
         "homepage": "https://www.prospecthub.app",
-        "image": "/projects/prospecthub.png"
+        "image": "/projects/prospecthub.png",
+        "dashboardImage": "/projects/prospecthub-dashboard.png"
     },
     {
         "title": "Mitake Ramen - Plateforme de Commande",
